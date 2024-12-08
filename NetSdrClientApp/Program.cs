@@ -1,7 +1,7 @@
 ﻿using NetSdrClientApp;
 using NetSdrClientApp.Networking;
 
-var tcpClient = new TcpClientWrapper("127.0.0.1", 8080);
+var tcpClient = new TcpClientWrapper("127.0.0.1", 5000);
 var udpClient = new UdpClientWrapper(60000);
 
 var netSdr = new NetSdrClient(tcpClient, udpClient);
@@ -19,7 +19,7 @@ while (true)
     }
     else if (key == ConsoleKey.F)
     {
-        await netSdr.ChangeFrequencyAsync(200000, 1);
+        await netSdr.ChangeFrequencyAsync(20000000, 1);
     }
     else if (key == ConsoleKey.S)
     {

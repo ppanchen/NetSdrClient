@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 public class UdpClientWrapper : IUdpClient
@@ -27,12 +28,16 @@ public class UdpClientWrapper : IUdpClient
             _udpClient = new UdpClient(_localEndPoint);
             while (!_cts.Token.IsCancellationRequested)
             {
-                UdpReceiveResult result = await _udpClient.ReceiveAsync();
+                UdpReceiveResult result = await _udpClient.ReceiveAsync(_cts.Token);
                 MessageReceived?.Invoke(this, result.Buffer);
 
                 string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
                 Console.WriteLine($"Received: {receivedMessage} from {result.RemoteEndPoint}");
             }
+        }
+        catch (OperationCanceledException ex)
+        {
+            //empty
         }
         catch (Exception ex)
         {

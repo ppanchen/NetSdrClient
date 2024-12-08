@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class EchoTcpServer
+public class EchoServer
 {
     private readonly int _port;
     private TcpListener _listener;
     private CancellationTokenSource _cancellationTokenSource;
 
-    public EchoTcpServer(int port)
+
+    public EchoServer(int port)
     {
         _port = port;
         _cancellationTokenSource = new CancellationTokenSource();
@@ -80,19 +81,83 @@ public class EchoTcpServer
 
     public static async Task Main(string[] args)
     {
-        EchoTcpServer server = new EchoTcpServer(8080);
+        EchoServer server = new EchoServer(5000);
 
         // Start the server in a separate task
         _ = Task.Run(() => server.StartAsync());
 
-        // Wait for user input to stop the server
-        Console.WriteLine("Press 'q' to quit...");
-        while (Console.ReadKey(intercept: true).Key != ConsoleKey.Q)
-        {
-            // Just wait until 'q' is pressed
-        }
+        string host = "127.0.0.1"; // Target IP
+        int port = 60000;          // Target Port
+        string message = "Hello, UDP with Timer!";
+        int intervalMilliseconds = 5000; // Send every 3 seconds
 
-        // Stop the server
-        server.Stop();
+        using (var sender = new UdpTimedSender(host, port))
+        {
+            Console.WriteLine("Press any key to stop sending...");
+            sender.StartSending(message, intervalMilliseconds);
+
+            Console.WriteLine("Press 'q' to quit...");
+            while (Console.ReadKey(intercept: true).Key != ConsoleKey.Q)
+            {
+                // Just wait until 'q' is pressed
+            }
+
+            sender.StopSending();
+            server.Stop();
+            Console.WriteLine("Sender stopped.");
+        }
+    }
+}
+
+
+public class UdpTimedSender : IDisposable
+{
+    private readonly string _host;
+    private readonly int _port;
+    private readonly UdpClient _udpClient;
+    private Timer _timer;
+
+    public UdpTimedSender(string host, int port)
+    {
+        _host = host;
+        _port = port;
+        _udpClient = new UdpClient();
+    }
+
+    public void StartSending(string message, int intervalMilliseconds)
+    {
+        if (_timer != null)
+            throw new InvalidOperationException("Sender is already running.");
+
+        _timer = new Timer(SendMessageCallback, message, 0, intervalMilliseconds);
+    }
+
+    private void SendMessageCallback(object state)
+    {
+        try
+        {
+            var message = (string)state;
+            var messageBytes = Encoding.UTF8.GetBytes(message);
+            var endpoint = new IPEndPoint(IPAddress.Parse(_host), _port);
+
+            _udpClient.Send(messageBytes, messageBytes.Length, endpoint);
+            Console.WriteLine($"Message sent to {_host}:{_port} - {message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending message: {ex.Message}");
+        }
+    }
+
+    public void StopSending()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+
+    public void Dispose()
+    {
+        StopSending();
+        _udpClient.Dispose();
     }
 }
