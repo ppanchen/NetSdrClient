@@ -1,52 +1,39 @@
 ﻿using NetSdrClientApp;
+using NetSdrClientApp.Networking;
 
-var cts = new CancellationTokenSource();
+var tcpClient = new TcpClientWrapper("127.0.0.1", 8080);
+var udpClient = new UdpClientWrapper(60000);
 
-Console.CancelKeyPress += (sender, e) =>
+var netSdr = new NetSdrClient(tcpClient, udpClient);
+
+while (true)
 {
-    e.Cancel = true;
-    cts.Cancel();
-};
-
-var client = new TcpClientWrapper("127.0.0.1", 8080);
-
-Task listeningTask = Task.CompletedTask;
-
-try
-{
-    client.Connect();
-
-    client.MessageReceived += (s, m) =>
+    var key = Console.ReadKey(intercept: true).Key;
+    if (key == ConsoleKey.C)
     {
-        foreach (var item in m.Select(b => Convert.ToString(b, toBase: 8)))
-        {
-            Console.Write(item + " ");
-        }
-        Console.WriteLine();
-    };
-
-    listeningTask = client.StartListeningAsync(cts.Token);
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error: {ex.Message}");
-}
-
-var loop  = Task.Run(async () =>
-{
-    while (true)
+        await netSdr.ConnectAsync();
+    }
+    else if (key == ConsoleKey.D)
     {
-        var key = Console.ReadKey(intercept: true).Key;
-        if (key == ConsoleKey.M)
+        netSdr.Disconect();
+    }
+    else if (key == ConsoleKey.F)
+    {
+        await netSdr.ChangeFrequencyAsync(200000, 1);
+    }
+    else if (key == ConsoleKey.S)
+    {
+        if (netSdr.IQStarted)
         {
-            await client.SendMessageAsync(new byte[] { 0, 1 }, cts.Token);
+            await netSdr.StopIQAsync();
         }
-        else if (key == ConsoleKey.Q)
+        else
         {
-            break;
+            await netSdr.StartIQAsync();
         }
     }
-});
-
-await listeningTask;
-client.Disconnect();
+    else if (key == ConsoleKey.Q)
+    {
+        break;
+    }
+}
