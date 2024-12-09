@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// This program was designed for test purposes only
+/// Not for a review
+/// </summary>
 public class EchoServer
 {
     private readonly int _port;
