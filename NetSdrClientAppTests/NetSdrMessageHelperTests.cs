@@ -63,5 +63,7 @@ namespace NetSdrClientAppTests
 
             Assert.That(parametersBytes.Count(), Is.EqualTo(parametersLength));
         }
+
+        //TODO: add more NetSdrMessageHelper tests
     }
 }

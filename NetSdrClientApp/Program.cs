@@ -1,6 +1,13 @@
 ﻿using NetSdrClientApp;
 using NetSdrClientApp.Networking;
 
+Console.WriteLine(@"Usage:
+C - connect
+D - disconnet
+F - set frequency
+S - Start/Stop IQ listener
+Q - quit");
+
 var tcpClient = new TcpClientWrapper("127.0.0.1", 5000);
 var udpClient = new UdpClientWrapper(60000);
 

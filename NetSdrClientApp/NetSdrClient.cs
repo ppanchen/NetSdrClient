@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using static NetSdrClientApp.Messages.NetSdrMessageHelper;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NetSdrClientApp
 {
@@ -59,10 +60,16 @@ namespace NetSdrClientApp
 
         public async Task StartIQAsync()
         {
+            if (!_tcpClient.Connected)
+            {
+                Console.WriteLine("No active connection.");
+                return;
+            }
+
 ;           var iqDataMode = (byte)0x80;
             var start = (byte)0x02;
             var fifo16bitCaptureMode = (byte)0x01;
-            var n = (byte)100;
+            var n = (byte)1;
 
             var args = new[] { iqDataMode, start, fifo16bitCaptureMode, n };
 
@@ -77,6 +84,12 @@ namespace NetSdrClientApp
 
         public async Task StopIQAsync()
         {
+            if (!_tcpClient.Connected)
+            {
+                Console.WriteLine("No active connection.");
+                return;
+            }
+
             var stop = (byte)0x01;
 
             var args = new byte[] { 0, stop, 0, 0 };
@@ -103,14 +116,31 @@ namespace NetSdrClientApp
 
         private void _udpClient_MessageReceived(object? sender, byte[] e)
         {
-            //TODO: translate message and write into file in binary format
-            Console.WriteLine("UDP message recieved: " + Convert.ToBase64String(e));
+            NetSdrMessageHelper.TranslateMessage(e, out MsgTypes type, out ControlItemCodes code, out ushort sequenceNum, out byte[] body);
+            var samples = NetSdrMessageHelper.GetSamples(16, body);
+
+            Console.WriteLine($"Samples recieved: " + body.Select(b => Convert.ToString(b, toBase: 16)).Aggregate((l, r) => $"{l} {r}"));
+
+            using (FileStream fs = new FileStream("samples.bin", FileMode.Append, FileAccess.Write, FileShare.Read))
+            using (BinaryWriter sw = new BinaryWriter(fs))
+            {
+                foreach (var sample in samples)
+                {
+                    sw.Write((short)sample); //write 16 bit per sample as configured 
+                }
+            }
         }
 
         private TaskCompletionSource<byte[]> responseTaskSource;
 
         private async Task<byte[]> SendTcpRequest(byte[] msg)
         {
+            if (!_tcpClient.Connected)
+            {
+                Console.WriteLine("No active connection.");
+                return null;
+            }
+
             responseTaskSource = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
             var responseTask = responseTaskSource.Task;
 

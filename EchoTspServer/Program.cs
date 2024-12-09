@@ -88,13 +88,12 @@ public class EchoServer
 
         string host = "127.0.0.1"; // Target IP
         int port = 60000;          // Target Port
-        string message = "Hello, UDP with Timer!";
         int intervalMilliseconds = 5000; // Send every 3 seconds
 
         using (var sender = new UdpTimedSender(host, port))
         {
             Console.WriteLine("Press any key to stop sending...");
-            sender.StartSending(message, intervalMilliseconds);
+            sender.StartSending(intervalMilliseconds);
 
             Console.WriteLine("Press 'q' to quit...");
             while (Console.ReadKey(intercept: true).Key != ConsoleKey.Q)
@@ -124,24 +123,31 @@ public class UdpTimedSender : IDisposable
         _udpClient = new UdpClient();
     }
 
-    public void StartSending(string message, int intervalMilliseconds)
+    public void StartSending(int intervalMilliseconds)
     {
         if (_timer != null)
             throw new InvalidOperationException("Sender is already running.");
 
-        _timer = new Timer(SendMessageCallback, message, 0, intervalMilliseconds);
+        _timer = new Timer(SendMessageCallback, null, 0, intervalMilliseconds);
     }
+
+    ushort i = 0;
 
     private void SendMessageCallback(object state)
     {
         try
         {
-            var message = (string)state;
-            var messageBytes = Encoding.UTF8.GetBytes(message);
+            //dummy data
+            Random rnd = new Random();
+            byte[] samples = new byte[1024];
+            rnd.NextBytes(samples);
+            i++;
+
+            byte[] msg = (new byte[] { 0x04, 0x84 }).Concat(BitConverter.GetBytes(i)).Concat(samples).ToArray();
             var endpoint = new IPEndPoint(IPAddress.Parse(_host), _port);
 
-            _udpClient.Send(messageBytes, messageBytes.Length, endpoint);
-            Console.WriteLine($"Message sent to {_host}:{_port} - {message}");
+            _udpClient.Send(msg, msg.Length, endpoint);
+            Console.WriteLine($"Message sent to {_host}:{_port} ");
         }
         catch (Exception ex)
         {

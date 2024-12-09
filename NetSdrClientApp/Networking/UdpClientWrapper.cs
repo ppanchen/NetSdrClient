@@ -31,8 +31,7 @@ public class UdpClientWrapper : IUdpClient
                 UdpReceiveResult result = await _udpClient.ReceiveAsync(_cts.Token);
                 MessageReceived?.Invoke(this, result.Buffer);
 
-                string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-                Console.WriteLine($"Received: {receivedMessage} from {result.RemoteEndPoint}");
+                Console.WriteLine($"Received from {result.RemoteEndPoint}");
             }
         }
         catch (OperationCanceledException ex)
