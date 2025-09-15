@@ -1,0 +1,42 @@
+name: ci
+on: 
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-test-analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for proper PR analysis
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore NetSdrClient.sln
+
+      - name: Build
+        run: dotnet build NetSdrClient.sln -c Release --no-restore
+
+      - name: Tests with coverage (OpenCover format)
+        run: |
+          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build             /p:CollectCoverage=true             /p:CoverletOutput=TestResults/coverage.xml             /p:CoverletOutputFormat=opencover
+
+      - name: SonarCloud scan (wait for Quality Gate)
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=ppanchen
+            -Dsonar.projectKey=ppanchen_NetSdrClient
+            -Dsonar.cs.opencover.reportsPaths=**/coverage.xml
+            -Dsonar.qualitygate.wait=true
+
+      # - name: dotnet format (verify)
+      #   run: dotnet format --verify-no-changes
