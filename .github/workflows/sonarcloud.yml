@@ -54,12 +54,13 @@ jobs:
       - name: SonarScanner Begin
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin ^
-            /k:"ppanchen_NetSdrClient" ^
-            /o:"ppanchen" ^
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" ^
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.xml" ^
-            /d:sonar.qualitygate.wait=true
+          echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
+          dotnet sonarscanner begin `
+          /k:"ppanchen_NetSdrClient" `
+          /o:"ppanchen" `
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.xml" `
+          /d:sonar.qualitygate.wait=true
         shell: pwsh
       # 2) BUILD & TEST
       - name: Restore
