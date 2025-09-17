@@ -23,5 +23,3 @@ This folder contains a minimal **GitHub Actions + SonarCloud** setup tailored to
 ## Keys used
 - `sonar.organization`: **ppanchen** (adjust if your SonarCloud org key is different)
 - `sonar.projectKey`: **ppanchen_NetSdrClient** (recommended; adjust if SonarCloud shows a different key)
-
-If SonarCloud displays other values on your project's page, update them in `ci.yml` and/or `sonar-project.properties`.
