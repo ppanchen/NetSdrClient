@@ -12,7 +12,7 @@ namespace NetSdrClientApp.Networking
         void Connect();
         void Disconnect();
         Task SendMessageAsync(byte[] data);
-        Task SendMessageAsync(string str);
+
         event EventHandler<byte[]> MessageReceived;
         public bool Connected { get; }
     }
