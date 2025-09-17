@@ -69,12 +69,6 @@
   ```
   sonar.cs.opencover.reportsPaths=**/coverage.xml
   ```
-- За бажанням — явно позначити тести у `sonar-project.properties`:
-  ```properties
-  sonar.tests=NetSdrClientAppTests
-  sonar.test.inclusions=NetSdrClientAppTests/**/*.cs
-  sonar.exclusions=**/bin/**,**/obj/**,NetSdrClientAppTests/**
-  ```
 
 **Здати:** PR із новими тестами, скрін Coverage у Sonar, шлях до звіту в артефактах/логах CI.
 
