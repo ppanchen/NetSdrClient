@@ -22,9 +22,9 @@ jobs:
       - name: Build
         run: dotnet build NetSdrClient.sln -c Release --no-restore
 
-      #- name: Tests with coverage (OpenCover format)
-      #  run: |
-      #    dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build             /p:CollectCoverage=true             /p:CoverletOutput=TestResults/coverage.xml             /p:CoverletOutputFormat=opencover
+      - name: Tests with coverage (OpenCover format)
+        run: |
+          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build             /p:CollectCoverage=true             /p:CoverletOutput=TestResults/coverage.xml             /p:CoverletOutputFormat=opencover
 
       - name: SonarCloud scan (wait for Quality Gate)
         uses: SonarSource/sonarqube-scan-action@v5
