@@ -1,9 +1,5 @@
 name: ci
-on: 
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
+on: [pull_request, push]
 
 jobs:
   build-test-analyze:
@@ -39,5 +35,5 @@ jobs:
             -Dsonar.cs.opencover.reportsPaths=**/coverage.xml
             -Dsonar.qualitygate.wait=true
 
-      # - name: dotnet format (verify)
-      #   run: dotnet format --verify-no-changes
+      - name: dotnet format (verify)
+        run: dotnet format --verify-no-changes
