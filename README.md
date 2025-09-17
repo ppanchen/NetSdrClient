@@ -14,6 +14,42 @@
 
 ---
 
+## Вимоги та швидкий старт
+
+**Необхідно:**
+- .NET 8 SDK
+- Публічний GitHub-репозиторій
+- Обліковка SonarCloud (організація прив’язана до GitHub)
+
+**1) Підключити SonarCloud**
+- На SonarCloud створити проект з цього репозиторію (*Analyze new project*).
+- Згенерувати **user token** і додати в репозиторій як секрет **`SONAR_TOKEN`** (*Settings → Secrets and variables → Actions*).
+- У SonarCloud **вимкнути Automatic Analysis** (використовуємо CI-аналіз).
+
+**2) Увімкнути CI (GitHub Actions)**
+- Файл `.github/workflows/ci.yml` має запускатися на `pull_request` **і** на `push` у `main`/`master`.
+- Приклад сонар-кроку в workflow:
+  ```yaml
+  - name: SonarCloud scan
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    uses: SonarSource/sonarqube-scan-action@v5
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    with:
+      args: >
+        -Dsonar.host.url=https://sonarcloud.io
+        -Dsonar.organization=ppanchen
+        -Dsonar.projectKey=ppanchen_NetSdrClient
+        -Dsonar.cs.opencover.reportsPaths=**/coverage.xml
+        -Dsonar.qualitygate.wait=true
+  ```
+
+**3) Gated merge**
+- *Settings → Branches → Add rule (`main`/`master`)* → **Require a pull request before merging** + **Require status checks to pass**.
+- Після першого успішного ранну на `main` у списку з’являться чеки (job CI та **SonarCloud Code Analysis/Quality Gate**).
+
+---
+
 ## Структура 8 лабораторних
 
 > Кожна робота — **через Pull Request**. У PR додати короткий опис: *що змінено / як перевірити / ризики*.
@@ -167,3 +203,5 @@
   Обмежити умову запуску Sonar: тільки PR **або** `refs/heads/master`.
 - **PR зелений, push червоний**
   Перевірити **New Code Definition** (Number of days або Previous version) і довести покриття/дублікації на “new code”.
+
+Успіхів! 🚀
