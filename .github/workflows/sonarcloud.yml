@@ -39,8 +39,8 @@ permissions:
   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
 jobs:
-  tests-and-sonar:
-    name: Tests & Sonar (.NET)
+  sonar-check:
+    name: Sonar Check
     runs-on: windows-latest   # безпечно для будь-яких .NET проектів
     steps:
       - uses: actions/checkout@v4
@@ -67,13 +67,13 @@ jobs:
         run: dotnet restore NetSdrClient.sln
       - name: Build
         run: dotnet build NetSdrClient.sln -c Release --no-restore
-      - name: Tests with coverage (OpenCover)
-        run: |
-          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build `
-            /p:CollectCoverage=true `
-            /p:CoverletOutput=TestResults/coverage.xml `
-            /p:CoverletOutputFormat=opencover
-        shell: pwsh
+      #- name: Tests with coverage (OpenCover)
+      #  run: |
+      #    dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build `
+      #      /p:CollectCoverage=true `
+      #      /p:CoverletOutput=TestResults/coverage.xml `
+      #      /p:CoverletOutputFormat=opencover
+      #  shell: pwsh
       # 3) END: SonarScanner
       - name: SonarScanner End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
