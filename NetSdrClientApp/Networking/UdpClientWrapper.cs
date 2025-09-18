@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,5 +57,29 @@ public class UdpClientWrapper : IUdpClient
         {
             Console.WriteLine($"Error while stopping: {ex.Message}");
         }
+    }
+
+    public void Exit()
+    {
+        try
+        {
+            _cts?.Cancel();
+            _udpClient?.Close();
+            Console.WriteLine("Stopped listening for UDP messages.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while stopping: {ex.Message}");
+        }
+    }
+
+    public override int GetHashCode()
+    {
+        var payload = $"{nameof(UdpClientWrapper)}|{_localEndPoint.Address}|{_localEndPoint.Port}";
+
+        using var md5 = MD5.Create();
+        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(payload));
+
+        return BitConverter.ToInt32(hash, 0);
     }
 }
