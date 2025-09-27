@@ -1,8 +1,9 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Sane4ka126_NetSdrClient2&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Sane4ka126_NetSdrClient2)
+
 
 
 Цей репозиторій використовується для курсу **реінжиніринг ПЗ**. 
