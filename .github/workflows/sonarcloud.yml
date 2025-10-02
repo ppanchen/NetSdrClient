@@ -57,7 +57,7 @@ jobs:
           echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
           dotnet sonarscanner begin `
           /k:"ZukeiZ_NetSdrClient" `
-          /o:"ZukeiZ" `
+          /o:"zukeiz" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.cs.opencover.reportsPaths="**/coverage.xml" `
           /d:sonar.cpd.cs.minimumTokens=40 `
