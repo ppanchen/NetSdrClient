@@ -1,5 +1,5 @@
 # Лабораторні з реінжинірингу (8×)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=akulkaaaaaaaaaaaaa_NetSdrClient&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=akulkaaaaaaaaaaaaa_NetSdrClient&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=akulkaaaaaaaaaaaaa_NetSdrClient)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=akulkaaaaaaaaaaaaa_NetSdrClient&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=akulkaaaaaaaaaaaaa_NetSdrClient&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=akulkaaaaaaaaaaaaa_NetSdrClient&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
