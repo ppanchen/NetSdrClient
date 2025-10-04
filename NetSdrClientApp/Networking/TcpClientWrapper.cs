@@ -117,7 +117,7 @@ namespace NetSdrClientApp.Networking
                         }
                     }
                 }
-                catch (OperationCanceledException ex)
+                catch (OperationCanceledException)
                 {
                     //empty
                 }
