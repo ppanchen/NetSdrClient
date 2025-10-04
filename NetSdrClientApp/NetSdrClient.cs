@@ -138,7 +138,7 @@ namespace NetSdrClientApp
             if (!_tcpClient.Connected)
             {
                 Console.WriteLine("No active connection.");
-                return null;
+                return Array.Empty<byte>();
             }
 
             responseTaskSource = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
