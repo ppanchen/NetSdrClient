@@ -108,15 +108,12 @@ namespace NetSdrClientApp.Messages
 
         public static IEnumerable<int> GetSamples(ushort sampleSize, byte[] body)
         {
-            sampleSize /= 8; //to bytes
-            if (sampleSize  > 4)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            ValidateSampleSize(sampleSize);
 
-            var bodyEnumerable = body as IEnumerable<byte>;
+            sampleSize /= 8; // to bytes
+            var bodyEnumerable = body.AsEnumerable();
             var prefixBytes = Enumerable.Range(0, 4 - sampleSize)
-                                      .Select(b => (byte)0);
+                                        .Select(b => (byte)0);
 
             while (bodyEnumerable.Count() >= sampleSize)
             {
@@ -127,6 +124,15 @@ namespace NetSdrClientApp.Messages
                 bodyEnumerable = bodyEnumerable.Skip(sampleSize);
             }
         }
+
+        private static void ValidateSampleSize(ushort sampleSize)
+        {
+            if (sampleSize / 8 > 4)
+            {
+                throw new ArgumentOutOfRangeException(nameof(sampleSize), sampleSize, "Sample size must be between 8 and 32 bits.");
+            }
+        }
+
 
         private static byte[] GetHeader(MsgTypes type, int msgLength)
         {
