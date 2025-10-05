@@ -39,7 +39,7 @@ namespace NetSdrClientApp.Networking
             }
             catch (OperationCanceledException ex)
             {
-                //empty
+                Console.WriteLine($"Operation was canceled. Message: {ex.Message}");
             }
             catch (Exception ex)
             {
