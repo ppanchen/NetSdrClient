@@ -45,6 +45,11 @@ namespace NetSdrClientApp.Networking
             {
                 Console.WriteLine($"Error receiving message: {ex.Message}");
             }
+            finally
+            {
+                _cts?.Cancel();
+                _cts?.Dispose();
+            }
         }
 
         public void StopListening()
@@ -52,6 +57,7 @@ namespace NetSdrClientApp.Networking
             try
             {
                 _cts?.Cancel();
+                _cts?.Dispose();
                 _udpClient?.Close();
                 Console.WriteLine("Stopped listening for UDP messages.");
             }
@@ -66,6 +72,7 @@ namespace NetSdrClientApp.Networking
             try
             {
                 _cts?.Cancel();
+                _cts?.Dispose();
                 _udpClient?.Close();
                 Console.WriteLine("Stopped listening for UDP messages.");
             }
