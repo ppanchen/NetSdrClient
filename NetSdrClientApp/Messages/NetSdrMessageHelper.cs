@@ -108,16 +108,34 @@ namespace NetSdrClientApp.Messages
 
         public static IEnumerable<int> GetSamples(ushort sampleSize, byte[] body)
         {
-            sampleSize /= 8; //to bytes
-            if (sampleSize  > 4)
+            CheckMessageParameters(sampleSize, body);
+            return GetSampleIterator(sampleSize, body);
+        }
+
+        private static void CheckMessageParameters(ushort sampleSize, byte[] body)
+        {
+            sampleSize /= 8;
+
+            // check sizes
+            if (sampleSize > 4)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(sampleSize), "Sample size cannot exceed 4 bytes.");
             }
 
-            var bodyEnumerable = body as IEnumerable<byte>;
-            var prefixBytes = Enumerable.Range(0, 4 - sampleSize)
-                                      .Select(b => (byte)0);
+            // extra null-check for body
+            if (body == null || body.Length == 0)
+            {
+                throw new ArgumentException("Body cannot be null or empty.", nameof(body));
+            }
+        }
 
+        private static IEnumerable<int> GetSampleIterator(ushort sampleSize, byte[] body)
+        {
+            var bodyEnumerable = body.AsEnumerable();
+            var prefixBytes = Enumerable.Range(0, 4 - sampleSize)
+                                         .Select(b => (byte)0);
+
+            // iteration in bodyEnumerable
             while (bodyEnumerable.Count() >= sampleSize)
             {
                 yield return BitConverter.ToInt32(bodyEnumerable
