@@ -45,11 +45,6 @@ namespace NetSdrClientApp.Networking
             {
                 Console.WriteLine($"Error receiving message: {ex.Message}");
             }
-            finally
-            {
-                _cts?.Cancel();
-                _cts?.Dispose();
-            }
         }
 
         public void StopListening()
