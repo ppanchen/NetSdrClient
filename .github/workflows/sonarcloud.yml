@@ -1,4 +1,4 @@
-name: SonarCloud .NET 8 Analysis
+name: .NET + SonarCloud
 
 on:
   push:
@@ -8,56 +8,38 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-and-analyze:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Install SonarScanner for .NET
-        run: dotnet tool install --global dotnet-sonarscanner
+    - name: Install dependencies
+      run: dotnet restore
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Run tests and collect coverage
+      run: |
+        dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj \
+          /p:CollectCoverage=true \
+          /p:CoverletOutputFormat=opencover \
+          /p:CoverletOutput=coverage.opencover.xml
 
-      - name: Build solution
-        run: dotnet build NetSdrClientApp.sln --no-restore --configuration Release
+    - name: Begin SonarCloud Analysis
+      run: |
+        dotnet sonarscanner begin \
+          /k:"LeVanchua_-" \
+          /o:"levanchua" \
+          /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.projectBaseDir="./NetSdrClientApp" \
+          /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml"
 
-      - name: Begin SonarCloud analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          dotnet sonarscanner begin \
-            /k:"LeVanchua_-" \
-            /o:"<levanchua>" \
-            /d:sonar.login="${SONAR_TOKEN}" \
-            /d:sonar.projectBaseDir="${{ github.workspace }}" \
-            /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="**/TestResults/*/coverage.opencover.xml"
+    - name: Build
+      run: dotnet build NetSdrClientApp/NetSdrClientApp.csproj --no-restore
 
-      - name: Run tests with coverage
-        run: |
-          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj \
-            --no-build \
-            --verbosity normal \
-            --collect:"XPlat Code Coverage" \
-            --results-directory TestResults || echo "No tests found, skipping"
-
-      - name: Convert coverage to opencover (if exists)
-        run: |
-          COVERAGE_FILE=$(find TestResults -name 'coverage.cobertura.xml' | head -n 1)
-          if [ -f "$COVERAGE_FILE" ]; then
-            echo "Coverage file found: $COVERAGE_FILE"
-          else
-            echo "No coverage file found, skipping"
-          fi
-
-      - name: End SonarCloud analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+    - name: End SonarCloud Analysis
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
