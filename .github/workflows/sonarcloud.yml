@@ -1,4 +1,4 @@
-name: SonarCloud analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -8,66 +8,61 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pull-requests: read # дозволяє SonarCloud додавати коментарі до PR
+  pull-requests: read
 
 jobs:
-  sonarcloud:
-    name: SonarCloud Analysis
+  sonar:
+    name: SonarCloud Scan
     runs-on: windows-latest
-
     steps:
-      # 1️⃣ Отримуємо код репозиторію
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Checkout repo
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # потрібно для повної історії git
+          fetch-depth: 0
 
-      # 2️⃣ Встановлюємо .NET SDK 8
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      # Setup .NET 8 SDK
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # 3️⃣ Встановлюємо SonarScanner
+      # Install SonarScanner
       - name: Install SonarScanner
-        run: dotnet tool install --global dotnet-sonarscanner
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
         shell: pwsh
 
-      - name: Add dotnet tools to PATH
-        run: echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
-        shell: pwsh
-
-      # 4️⃣ Запуск початку аналізу Sonar
+      # Begin SonarCloud analysis
       - name: SonarScanner Begin
-        shell: pwsh
         run: |
           dotnet sonarscanner begin `
             /k:"LeVanchua_-" `
             /o:"levanchua" `
-            /d:sonar.host.url="https://sonarcloud.io" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" `
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.xml" `
-            /d:sonar.exclusions="**/bin/**,**/obj/**,**/*.yml" `
+            /d:sonar.cpd.cs.minimumTokens=40 `
+            /d:sonar.cpd.cs.minimumLines=5 `
+            /d:sonar.exclusions=**/bin/**,**/obj/**,**/sonarcloud.yml `
             /d:sonar.qualitygate.wait=true
+        shell: pwsh
 
-      # 5️⃣ Restore & Build
-      - name: Restore dependencies
+      # Restore & Build
+      - name: Restore Dependencies
         run: dotnet restore NetSdrClient.sln
 
-      - name: Build project
+      - name: Build Solution
         run: dotnet build NetSdrClient.sln -c Release --no-restore
 
-      # 6️⃣ Тестування з покриттям (OpenCover)
-      - name: Run tests with coverage
-        shell: pwsh
+      # Run tests with coverage
+      - name: Test with Coverage
         run: |
           dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build `
             /p:CollectCoverage=true `
-            /p:CoverletOutputFormat=opencover `
-            /p:CoverletOutput=TestResults/coverage.xml
-
-      # 7️⃣ Завершення аналізу
-      - name: SonarScanner End
+            /p:CoverletOutput=TestResults/coverage.xml `
+            /p:CoverletOutputFormat=opencover
         shell: pwsh
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      # End SonarCloud analysis
+      - name: SonarScanner End
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        shell: pwsh
