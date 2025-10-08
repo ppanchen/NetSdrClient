@@ -14,8 +14,8 @@ namespace NetSdrClientApp
 {
     public class NetSdrClient
     {
-        private ITcpClient _tcpClient;
-        private IUdpClient _udpClient;
+        private readonly ITcpClient _tcpClient;
+        private readonly IUdpClient _udpClient;
 
         public bool IQStarted { get; set; }
 
@@ -66,7 +66,7 @@ namespace NetSdrClientApp
                 return;
             }
 
-;           var iqDataMode = (byte)0x80;
+            var iqDataMode = (byte)0x80;
             var start = (byte)0x02;
             var fifo16bitCaptureMode = (byte)0x01;
             var n = (byte)1;
@@ -114,9 +114,9 @@ namespace NetSdrClientApp
             await SendTcpRequest(msg);
         }
 
-        private void _udpClient_MessageReceived(object? sender, byte[] e)
+        private static void _udpClient_MessageReceived(object? sender, byte[] e)
         {
-            NetSdrMessageHelper.TranslateMessage(e, out MsgTypes type, out ControlItemCodes code, out ushort sequenceNum, out byte[] body);
+            NetSdrMessageHelper.TranslateMessage(e, out _, out _, out _, out byte[] body);
             var samples = NetSdrMessageHelper.GetSamples(16, body);
 
             Console.WriteLine($"Samples recieved: " + body.Select(b => Convert.ToString(b, toBase: 16)).Aggregate((l, r) => $"{l} {r}"));
