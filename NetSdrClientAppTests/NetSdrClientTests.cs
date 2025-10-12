@@ -115,5 +115,20 @@ public class NetSdrClientTests
         Assert.That(_client.IQStarted, Is.False);
     }
 
+    [Test]
+    public async Task StopIQNoConnectionTest()
+    {
+        // Arrange
+        _tcpMock.SetupGet(t => t.Connected).Returns(false);
+
+        // Act
+        await _client.StopIQAsync();
+
+        // Assert
+        _tcpMock.Verify(tcp => tcp.SendMessageAsync(It.IsAny<byte[]>()), Times.Never);
+        _updMock.Verify(udp => udp.StopListening(), Times.Never);
+        Assert.That(_client.IQStarted, Is.False);
+    }
+
     //TODO: cover the rest of the NetSdrClient code here
 }
