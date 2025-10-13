@@ -64,6 +64,70 @@ namespace NetSdrClientAppTests
             Assert.That(parametersBytes.Count(), Is.EqualTo(parametersLength));
         }
 
+        [Test]
+        public void TranslateMessage_DataItem_ReturnsTrue()
+        {
+            // Arrange
+            int msgHeaderLength = 2;
+            int msgSequenceNumberLength = 2;
+            var type = NetSdrMessageHelper.MsgTypes.DataItem0;
+            byte[] body = new byte[3];
+            ushort sequenceNumber = 42;
+
+            byte[] seqBytes = BitConverter.GetBytes(sequenceNumber);
+            byte[] msgHeader = BitConverter.GetBytes(
+                (ushort)((int)type << 13 | msgHeaderLength + msgSequenceNumberLength + body.Length)
+            );
+            byte[] msg = msgHeader.Concat(seqBytes).Concat(body).ToArray();
+
+            // Act
+            bool success = NetSdrMessageHelper.TranslateMessage(
+                msg, out var parsedType, out var parsedCode, out var parsedSeq, out var parsedBody
+            );
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(success, Is.True);
+                Assert.That(parsedType, Is.EqualTo(type));
+                Assert.That(parsedCode, Is.EqualTo(NetSdrMessageHelper.ControlItemCodes.None));
+                Assert.That(parsedSeq, Is.EqualTo(sequenceNumber));
+                Assert.That(parsedBody, Is.EqualTo(body));
+            });
+        }
+
+        [Test]
+        public void GetSamples_ReturnsExpectedIntegers_For16bitSamples()
+        {
+            // Arrange
+            ushort sampleSizeBits = 16;
+            byte[] body = new byte[] { 1, 2, 3, 4 };
+
+            // Act
+            var samples = NetSdrMessageHelper.GetSamples(sampleSizeBits, body).ToArray();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(samples, Has.Length.EqualTo(2));
+                Assert.That(samples[0], Is.EqualTo(513));
+                Assert.That(samples[1], Is.EqualTo(1027));
+            });
+        }
+
+        [Test]
+        public void GetSamples_Throws_ForTooLargeSampleSize()
+        {
+            // Arrange
+            ushort sampleSizeBits = 40;
+
+            // Act / Assert
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+            {
+                var _ = NetSdrMessageHelper.GetSamples(sampleSizeBits, new byte[] { 1, 2, 3, 4, 5 }).ToArray();
+            });
+        }
+
         //TODO: add more NetSdrMessageHelper tests
     }
 }
