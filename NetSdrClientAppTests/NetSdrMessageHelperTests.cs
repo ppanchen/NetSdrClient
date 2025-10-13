@@ -109,7 +109,7 @@ namespace NetSdrClientAppTests
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.That(samples.Length, Is.EqualTo(2));
+                Assert.That(samples, Has.Length.EqualTo(2));
                 Assert.That(samples[0], Is.EqualTo(513));
                 Assert.That(samples[1], Is.EqualTo(1027));
             });
