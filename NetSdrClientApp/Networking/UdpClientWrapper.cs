@@ -5,81 +5,83 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-public class UdpClientWrapper : IUdpClient
+namespace NetSdrClientApp.Networking
 {
-    private readonly IPEndPoint _localEndPoint;
-    private CancellationTokenSource? _cts;
-    private UdpClient? _udpClient;
-
-    public event EventHandler<byte[]>? MessageReceived;
-
-    public UdpClientWrapper(int port)
+    public class UdpClientWrapper : IUdpClient
     {
-        _localEndPoint = new IPEndPoint(IPAddress.Any, port);
-    }
+        private readonly IPEndPoint _localEndPoint;
+        private CancellationTokenSource? _cts;
+        private UdpClient? _udpClient;
 
-    public async Task StartListeningAsync()
-    {
-        _cts = new CancellationTokenSource();
-        Console.WriteLine("Start listening for UDP messages...");
+        public event EventHandler<byte[]>? MessageReceived;
 
-        try
+        public UdpClientWrapper(int port)
         {
-            _udpClient = new UdpClient(_localEndPoint);
-            while (!_cts.Token.IsCancellationRequested)
-            {
-                UdpReceiveResult result = await _udpClient.ReceiveAsync(_cts.Token);
-                MessageReceived?.Invoke(this, result.Buffer);
+            _localEndPoint = new IPEndPoint(IPAddress.Any, port);
+        }
 
-                Console.WriteLine($"Received from {result.RemoteEndPoint}");
+        public async Task StartListeningAsync()
+        {
+            _cts = new CancellationTokenSource();
+            Console.WriteLine("Start listening for UDP messages...");
+
+            try
+            {
+                _udpClient = new UdpClient(_localEndPoint);
+                while (!_cts.Token.IsCancellationRequested)
+                {
+                    UdpReceiveResult result = await _udpClient.ReceiveAsync(_cts.Token);
+                    MessageReceived?.Invoke(this, result.Buffer);
+
+                    Console.WriteLine($"Received from {result.RemoteEndPoint}");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //empty
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error receiving message: {ex.Message}");
             }
         }
-        catch (OperationCanceledException ex)
-        {
-            //empty
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error receiving message: {ex.Message}");
-        }
-    }
 
-    public void StopListening()
-    {
-        try
+        public void StopListening()
         {
-            _cts?.Cancel();
-            _udpClient?.Close();
-            Console.WriteLine("Stopped listening for UDP messages.");
+            try
+            {
+                _cts?.Cancel();
+                _udpClient?.Close();
+                Console.WriteLine("Stopped listening for UDP messages.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while stopping: {ex.Message}");
+            }
         }
-        catch (Exception ex)
+
+        public void Exit()
         {
-            Console.WriteLine($"Error while stopping: {ex.Message}");
+            try
+            {
+                _cts?.Cancel();
+                _udpClient?.Close();
+                Console.WriteLine("Stopped listening for UDP messages.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while stopping: {ex.Message}");
+            }
         }
-    }
 
-    public void Exit()
-    {
-        try
+        public override int GetHashCode()
         {
-            _cts?.Cancel();
-            _udpClient?.Close();
-            Console.WriteLine("Stopped listening for UDP messages.");
+            var payload = $"{nameof(UdpClientWrapper)}|{_localEndPoint.Address}|{_localEndPoint.Port}";
+
+            using var md5 = MD5.Create();
+            var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(payload));
+
+            return BitConverter.ToInt32(hash, 0);
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error while stopping: {ex.Message}");
-        }
-    }
-
-    public override int GetHashCode()
-    {
-        var payload = $"{nameof(UdpClientWrapper)}|{_localEndPoint.Address}|{_localEndPoint.Port}";
-
-        using var md5 = MD5.Create();
-        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(payload));
-
-        return BitConverter.ToInt32(hash, 0);
     }
 }
