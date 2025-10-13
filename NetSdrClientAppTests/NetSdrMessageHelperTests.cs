@@ -96,6 +96,38 @@ namespace NetSdrClientAppTests
             });
         }
 
+        [Test]
+        public void GetSamples_ReturnsExpectedIntegers_For16bitSamples()
+        {
+            // Arrange
+            ushort sampleSizeBits = 16;
+            byte[] body = new byte[] { 1, 2, 3, 4 };
+
+            // Act
+            var samples = NetSdrMessageHelper.GetSamples(sampleSizeBits, body).ToArray();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(samples.Length, Is.EqualTo(2));
+                Assert.That(samples[0], Is.EqualTo(513));
+                Assert.That(samples[1], Is.EqualTo(1027));
+            });
+        }
+
+        [Test]
+        public void GetSamples_Throws_ForTooLargeSampleSize()
+        {
+            // Arrange
+            ushort sampleSizeBits = 40;
+
+            // Act / Assert
+            Assert.Throws<System.ArgumentOutOfRangeException>(() =>
+            {
+                var _ = NetSdrMessageHelper.GetSamples(sampleSizeBits, new byte[] { 1, 2, 3, 4, 5 }).ToArray();
+            });
+        }
+
         //TODO: add more NetSdrMessageHelper tests
     }
 }
