@@ -73,20 +73,27 @@ namespace NetSdrClientAppTests
             var type = NetSdrMessageHelper.MsgTypes.DataItem0;
             byte[] body = new byte[3];
             ushort sequenceNumber = 42;
-            byte[] seqBytes = BitConverter.GetBytes(sequenceNumber);
 
-            byte[] msgHeader = BitConverter.GetBytes((ushort)((int)type << 13 | msgHeaderLength + msgSequenceNumberLength + body.Length));
+            byte[] seqBytes = BitConverter.GetBytes(sequenceNumber);
+            byte[] msgHeader = BitConverter.GetBytes(
+                (ushort)((int)type << 13 | msgHeaderLength + msgSequenceNumberLength + body.Length)
+            );
             byte[] msg = msgHeader.Concat(seqBytes).Concat(body).ToArray();
 
             // Act
-            bool success = NetSdrMessageHelper.TranslateMessage(msg, out var parsedType, out var parsedCode, out var parsedSeq, out var parsedBody);
+            bool success = NetSdrMessageHelper.TranslateMessage(
+                msg, out var parsedType, out var parsedCode, out var parsedSeq, out var parsedBody
+            );
 
             // Assert
-            Assert.IsTrue(success);
-            Assert.That(parsedType, Is.EqualTo(type));
-            Assert.That(parsedCode, Is.EqualTo(NetSdrMessageHelper.ControlItemCodes.None));
-            Assert.That(parsedSeq, Is.EqualTo(sequenceNumber));
-            Assert.That(parsedBody, Is.EqualTo(body));
+            Assert.Multiple(() =>
+            {
+                Assert.That(success, Is.True);
+                Assert.That(parsedType, Is.EqualTo(type));
+                Assert.That(parsedCode, Is.EqualTo(NetSdrMessageHelper.ControlItemCodes.None));
+                Assert.That(parsedSeq, Is.EqualTo(sequenceNumber));
+                Assert.That(parsedBody, Is.EqualTo(body));
+            });
         }
 
         //TODO: add more NetSdrMessageHelper tests
