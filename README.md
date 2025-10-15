@@ -273,3 +273,8 @@ updates:
   Обмежити умову запуску Sonar: тільки PR **або** `refs/heads/master`.
 - **PR зелений, push червоний**
   Перевірити **New Code Definition** (Number of days або Previous version) і довести покриття/дублікації на “new code”.
+ 
+ # #   C o d e   Q u a l i t y  
+  
+ [ ! [ Q u a l i t y   G a t e   S t a t u s ] ( h t t p s : / / s o n a r c l o u d . i o / a p i / p r o j e c t _ b a d g e s / m e a s u r e ? p r o j e c t = A n d r e y p u p s _ r e i n j i n i r i n g & m e t r i c = a l e r t _ s t a t u s ) ] ( h t t p s : / / s o n a r c l o u d . i o / s u m m a r y / n e w _ c o d e ? i d = A n d r e y p u p s _ r e i n j i n i r i n g )  
+ 
