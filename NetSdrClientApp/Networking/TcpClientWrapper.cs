@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace NetSdrClientApp.Networking
 {
-    public class TcpClientWrapper : ITcpClient
+    public class TcpClientWrapper : ITcpClient, IDisposable
     {
         private string _host;
         private int _port;
         private TcpClient? _tcpClient;
         private NetworkStream? _stream;
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource? _cts;
 
         public bool Connected => _tcpClient != null && _tcpClient.Connected && _stream != null;
 
@@ -49,16 +49,20 @@ namespace NetSdrClientApp.Networking
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to connect: {ex.Message}");
+                Dispose();
             }
         }
 
         public void Disconnect()
         {
-            if (Connected)
+            if (Connected || _cts != null)
             {
                 _cts?.Cancel();
+                _cts?.Dispose();
                 _stream?.Close();
+                _stream?.Dispose();
                 _tcpClient?.Close();
+                _tcpClient?.Dispose();
 
                 _cts = null;
                 _tcpClient = null;
@@ -69,6 +73,12 @@ namespace NetSdrClientApp.Networking
             {
                 Console.WriteLine("No active connection to disconnect.");
             }
+        }
+
+        public void Dispose()
+        {
+            Disconnect();
+            GC.SuppressFinalize(this);
         }
 
         public async Task SendMessageAsync(byte[] data)
@@ -106,7 +116,7 @@ namespace NetSdrClientApp.Networking
                 {
                     Console.WriteLine($"Starting listening for incomming messages.");
 
-                    while (!_cts.Token.IsCancellationRequested)
+                    while (_cts != null && !_cts.Token.IsCancellationRequested)
                     {
                         byte[] buffer = new byte[8194];
 
@@ -117,9 +127,9 @@ namespace NetSdrClientApp.Networking
                         }
                     }
                 }
-                catch (OperationCanceledException ex)
+                catch (OperationCanceledException)
                 {
-                    //empty
+                    // Expected when cancellation is requested
                 }
                 catch (Exception ex)
                 {
@@ -136,5 +146,4 @@ namespace NetSdrClientApp.Networking
             }
         }
     }
-
 }
