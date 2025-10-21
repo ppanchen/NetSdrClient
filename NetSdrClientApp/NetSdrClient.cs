@@ -30,6 +30,7 @@ namespace NetSdrClientApp
 
         public async Task ConnectAsync()
         {
+            //connection logic
             if (!_tcpClient.Connected)
             {
                 _tcpClient.Connect();
