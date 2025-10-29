@@ -1,12 +1,15 @@
 # Лабораторні з реінжинірингу (8×)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ppanchen_NetSdrClient&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ppanchen_NetSdrClient)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=bugs)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=coverage)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=LeVanchua_-&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=LeVanchua_-)
 
 
 Цей репозиторій використовується для курсу **реінжиніринг ПЗ**. 
