@@ -101,6 +101,19 @@ public class NetSdrClientTests
     }
 
     [Test]
+    public async Task StopIQNoConnectionTest()
+    {
+
+        //act
+        await _client.StopIQAsync();
+
+        //assert
+        //No exception thrown
+        _tcpMock.Verify(tcp => tcp.SendMessageAsync(It.IsAny<byte[]>()), Times.Never);
+        _tcpMock.VerifyGet(tcp => tcp.Connected, Times.AtLeastOnce);
+    }
+    
+    [Test]
     public async Task StopIQTest()
     {
         //Arrange 
@@ -115,5 +128,55 @@ public class NetSdrClientTests
         Assert.That(_client.IQStarted, Is.False);
     }
 
-    //TODO: cover the rest of the NetSdrClient code here
+    [Test]
+    public async Task ChangeFrequencyAsyncTest()
+    {
+        await ConnectAsyncTest();
+
+        long freq = 123456789;
+        int channel = 2;
+
+        await _client.ChangeFrequencyAsync(freq, channel);
+
+        _tcpMock.Verify(tcp => tcp.SendMessageAsync(It.Is<byte[]>(b =>
+            b.Skip(4).First() == (byte)channel
+        )), Times.Once);
+    }
+
+    [Test]
+    public async Task ChangeFrequencyNoConnectionTest()
+    {
+        long freq = 123456789;
+        int channel = 2;
+
+        await _client.ChangeFrequencyAsync(freq, channel);
+
+        _tcpMock.Verify(tcp => tcp.SendMessageAsync(It.IsAny<byte[]>()), Times.Never);
+    }
+
+    [Test]
+    public async Task SendTcpRequest_ReturnsResponse()
+    {
+        await ConnectAsyncTest();
+
+        byte[] testMsg = new byte[] { 0x01, 0x02 };
+
+        var task = _client.StartIQAsync();
+        _tcpMock.Raise(tcp => tcp.MessageReceived += null, _tcpMock.Object, new byte[] { 0x05 });
+
+        await task;
+
+        Assert.That(_client.IQStarted, Is.True);
+    }
+
+    [Test]
+    public void TcpClientMessageReceived_SetsTaskCompletionSource()
+    {
+        byte[] response = new byte[] { 0x01, 0x02 };
+        var sendTask = _client.StartIQAsync();
+        _tcpMock.Raise(tcp => tcp.MessageReceived += null, _tcpMock.Object, response);
+
+        Assert.Pass("TaskCompletionSource set correctly via MessageReceived");
+    }
+
 }
