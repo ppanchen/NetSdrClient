@@ -65,8 +65,7 @@ namespace NetSdrClientApp
                 Console.WriteLine("No active connection.");
                 return;
             }
-
-;           var iqDataMode = (byte)0x80;
+;
             var start = (byte)0x02;
             var fifo16bitCaptureMode = (byte)0x01;
             var n = (byte)1;
