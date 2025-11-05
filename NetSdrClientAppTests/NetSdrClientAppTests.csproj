@@ -26,6 +26,13 @@
     <ProjectReference Include="..\NetSdrClientApp\NetSdrClientApp.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>opencover</CoverletOutputFormat>
+    <CoverletOutput>$(OutputDirectory)coverage.opencover.xml</CoverletOutput>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
