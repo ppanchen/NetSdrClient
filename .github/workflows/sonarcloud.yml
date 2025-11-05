@@ -70,13 +70,15 @@ jobs:
         run: dotnet restore NetSdrClient.sln
       - name: Build
         run: dotnet build NetSdrClient.sln -c Release --no-restore
-      - name: Tests with coverage (OpenCover)
-        run: |
-          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build `
-            /p:CollectCoverage=true `
-            /p:CoverletOutput=TestResults/coverage.xml `
-            /p:CoverletOutputFormat=opencover
+      
+      - name: Run Client Tests & Coverage
+        run: dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release /p:CollectCoverage=true /p:CoverletOutput=coverage.client.xml /p:CoverletOutputFormat=opencover
         shell: pwsh
+            
+      - name: Run Server Tests & Coverage
+        run: dotnet test EchoServerTests/EchoServerTests.csproj -c Release /p:CollectCoverage=true /p:CoverletOutput=coverage.server.xml /p:CoverletOutputFormat=opencover
+        shell: pwsh
+        
       # 3) END: SonarScanner
       - name: SonarScanner End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
