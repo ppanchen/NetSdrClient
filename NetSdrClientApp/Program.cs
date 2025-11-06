@@ -1,46 +1,66 @@
-﻿using NetSdrClientApp;
+using System;
+using System.Threading.Tasks;
+using NetSdrClientApp;
 using NetSdrClientApp.Networking;
 
-Console.WriteLine(@"Usage:
+class Program
+{
+    static async Task Main()
+    {
+        Console.WriteLine(@"Usage:
 C - connect
-D - disconnet
+D - disconnect
 F - set frequency
 S - Start/Stop IQ listener
 Q - quit");
 
-var tcpClient = new TcpClientWrapper("127.0.0.1", 5000);
-var udpClient = new UdpClientWrapper(60000);
+        var tcpClient = new TcpClientWrapper("127.0.0.1", 5000);
+        var udpClient = new UdpClientWrapper(60000);
 
-var netSdr = new NetSdrClient(tcpClient, udpClient);
+        var netSdr = new NetSdrClient(tcpClient, udpClient);
 
-while (true)
-{
-    var key = Console.ReadKey(intercept: true).Key;
-    if (key == ConsoleKey.C)
-    {
-        await netSdr.ConnectAsync();
-    }
-    else if (key == ConsoleKey.D)
-    {
-        netSdr.Disconect();
-    }
-    else if (key == ConsoleKey.F)
-    {
-        await netSdr.ChangeFrequencyAsync(20000000, 1);
-    }
-    else if (key == ConsoleKey.S)
-    {
-        if (netSdr.IQStarted)
+        while (true)
         {
-            await netSdr.StopIQAsync();
+            var key = Console.ReadKey(intercept: true).Key;
+
+            switch (key)
+            {
+                case ConsoleKey.C:
+                    await netSdr.ConnectAsync();
+                    Console.WriteLine("Connected to SDR.");
+                    break;
+
+                case ConsoleKey.D:
+                    netSdr.Disconnect();  // ✅ виправлено Disconect → Disconnect
+                    Console.WriteLine("Disconnected.");
+                    break;
+
+                case ConsoleKey.F:
+                    await netSdr.ChangeFrequencyAsync(20000000, 1);
+                    Console.WriteLine("Frequency set to 20 MHz.");
+                    break;
+
+                case ConsoleKey.S:
+                    if (netSdr.IQStarted)
+                    {
+                        await netSdr.StopIQAsync();
+                        Console.WriteLine("IQ stream stopped.");
+                    }
+                    else
+                    {
+                        await netSdr.StartIQAsync();
+                        Console.WriteLine("IQ stream started.");
+                    }
+                    break;
+
+                case ConsoleKey.Q:
+                    Console.WriteLine("Exiting...");
+                    return; // ✅ вихід з методу Main
+
+                default:
+                    Console.WriteLine("Unknown command.");
+                    break;
+            }
         }
-        else
-        {
-            await netSdr.StartIQAsync();
-        }
-    }
-    else if (key == ConsoleKey.Q)
-    {
-        break;
     }
 }
