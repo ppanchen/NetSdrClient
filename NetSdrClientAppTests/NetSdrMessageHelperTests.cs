@@ -64,6 +64,21 @@ namespace NetSdrClientAppTests
             Assert.That(parametersBytes.Count(), Is.EqualTo(parametersLength));
         }
 
-        //TODO: add more NetSdrMessageHelper tests
+        //TODO: add more NetSdrMessageHelper tests 
+        [Test]
+        public void GetSamples_ShouldReturnExpectedIntegers()
+        {
+            //Arrange
+            ushort sampleSize = 16; // 2 bytes per sample
+            byte[] body = { 0x01, 0x00, 0x02, 0x00 }; // 2 samples: 1, 2
+
+            //Act
+            var samples = NetSdrMessageHelper.GetSamples(sampleSize, body).ToArray();
+
+            //Assert
+            Assert.That(samples.Length, Is.EqualTo(2));
+            Assert.That(samples[0], Is.EqualTo(1));
+            Assert.That(samples[1], Is.EqualTo(2));
+        }
     }
 }
