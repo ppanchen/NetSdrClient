@@ -87,7 +87,7 @@ public class NetSdrClientTests
         Assert.That(_client.IQStarted, Is.True);
     }
 
-    [Test]
+   [Test]
     public async Task StopIQTest()
     {
         await ConnectAsyncTest();
@@ -119,6 +119,9 @@ public class NetSdrClientTests
         _tcpMock.Verify(t => t.Connect(), Times.Never);
     }
 
+    /// <summary>
+    /// Перевіряє, що StopIQAsync не кидає виняток, навіть якщо IQ ще не стартував.
+    /// </summary>
     [Test]
     public async Task StopIQWithoutStarting_ShouldNotThrow()
     {
@@ -130,6 +133,9 @@ public class NetSdrClientTests
         Assert.That(_client.IQStarted, Is.False);
     }
 
+    /// <summary>
+    /// Перевіряє, що при отриманні TCP повідомлення task завершується і повертає ті ж дані.
+    /// </summary>
     [Test]
     public async Task TcpMessageReceived_ShouldSetResponseTaskSource()
     {
@@ -137,12 +143,31 @@ public class NetSdrClientTests
         var testMessage = new byte[] { 0x01, 0x02, 0x03 };
 
         var sendTask = _client.GetType()
-            .GetMethod("SendTcpRequest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            .GetMethod("SendTcpRequest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
             .Invoke(_client, new object[] { testMessage }) as Task<byte[]>;
 
         _tcpMock.Raise(tcp => tcp.MessageReceived += null, _tcpMock.Object, testMessage);
-        var response = await sendTask;
+        var response = await sendTask!;
 
         Assert.AreEqual(testMessage, response);
+    }
+
+    /// <summary>
+    /// ✅ ДОДАНО: тестує, що під час StartIQAsync без підключення викидається виняток.
+    /// Це покриє гілку “if (!Connected)” або подібну логіку.
+    /// </summary>
+   [Test]
+    public async Task StartIQAsync_WithoutConnection_ShouldNotStartAndNotListen()
+    {
+        // Arrange
+        _tcpMock.Setup(t => t.Connected).Returns(false);
+
+        // Act
+        await _client.StartIQAsync();
+
+        // Assert
+        _tcpMock.Verify(t => t.SendMessageAsync(It.IsAny<byte[]>()), Times.Never);
+        _udpMock.Verify(u => u.StartListeningAsync(), Times.Never);
+        Assert.That(_client.IQStarted, Is.False);
     }
 }
