@@ -15,7 +15,7 @@ namespace NetSdrClientApp.Networking
             MessageReceived?.Invoke(this, data);
         }
 
-        protected void Log(string message)
+        protected static void Log(string message)
         {
             Console.WriteLine(message);
         }
