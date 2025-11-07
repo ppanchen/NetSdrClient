@@ -14,7 +14,6 @@ jobs:
   sonar-check:
     name: SonarCloud Check
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,14 +23,12 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # 1 Install SonarScanner
       - name: Install SonarScanner
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
         shell: pwsh
 
-      # 2️ Begin Sonar Analysis
       - name: SonarScanner Begin
         run: |
           dotnet sonarscanner begin `
@@ -41,29 +38,23 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="NetSdrClientAppTests/coverage.client.xml" `
             /d:sonar.cpd.cs.minimumTokens=40 `
             /d:sonar.cpd.cs.minimumLines=5 `
-            /d:sonar.exclusions="**/bin/**,**/obj/**,**/sonarcloud.yml" `
+            /d:sonar.exclusions=**/bin/**,**/obj/**,**/sonarcloud.yml `
             /d:sonar.qualitygate.wait=true
         shell: pwsh
 
-      # 3️ Restore & Build
       - name: Restore
         run: dotnet restore NetSdrClient.sln
-
       - name: Build
         run: dotnet build NetSdrClient.sln -c Release --no-restore
 
-      # 4️ Run Tests & Generate Coverage
       - name: Run Tests & Coverage
         run: |
-          cd NetSdrClientAppTests
-          dotnet test NetSdrClientAppTests.csproj -c Release `
+          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release `
             /p:CollectCoverage=true `
             /p:CoverletOutput=coverage.client.xml `
             /p:CoverletOutputFormat=opencover
-          dir
         shell: pwsh
 
-      # 5️ End Sonar Analysis
       - name: SonarScanner End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         shell: pwsh
