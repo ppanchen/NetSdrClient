@@ -160,34 +160,4 @@ public class NetSdrClientTests
         Assert.DoesNotThrowAsync(async () => await _client.StopIQAsync());
         _updMock.Verify(udp => udp.StopListening(), Times.Never);
     }
-
-    [Test]
-    public void UdpClient_MessageReceived_Reflection_SafeInvoke()
-    {
-        // arrange
-        var body = new byte[] { 0x01, 0x02, 0x03, 0x04 };
-        var method = typeof(NetSdrClient)
-            .GetMethod("_udpClient_MessageReceived",
-                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-
-        Assert.NotNull(method, "Method '_udpClient_MessageReceived' not found via reflection");
-
-        try
-        {
-            // act
-            method.Invoke(_client, new object[] { _updMock.Object, body });
-            Assert.Pass("Method invoked without unhandled exceptions");
-        }
-        catch (TargetInvocationException ex)
-        {
-            // Ми приймаємо будь-який виняток, бо важливо лише покриття коду
-            Assert.That(ex.InnerException, Is.Not.Null);
-            Assert.Pass($"Method invoked; inner exception type: {ex.InnerException.GetType().Name}");
-        }
-        catch (Exception ex)
-        {
-            // На випадок якщо щось інше
-            Assert.Pass($"Invocation threw {ex.GetType().Name}, which is acceptable for coverage.");
-        }
-    }
 }
