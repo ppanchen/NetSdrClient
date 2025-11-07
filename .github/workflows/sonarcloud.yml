@@ -23,38 +23,43 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      # 1️⃣ Install SonarScanner
       - name: Install SonarScanner
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "$env:USERPROFILE\.dotnet\tools" >> $env:GITHUB_PATH
         shell: pwsh
 
+      # 2️⃣ Begin SonarCloud analysis
       - name: SonarScanner Begin
         run: |
           dotnet sonarscanner begin `
             /k:"euviola_NetSdrClient" `
             /o:"euviola" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.cs.opencover.reportsPaths="NetSdrClientAppTests/coverage.client.xml" `
-            /d:sonar.cpd.cs.minimumTokens=40 `
-            /d:sonar.cpd.cs.minimumLines=5 `
-            /d:sonar.exclusions=**/bin/**,**/obj/**,**/sonarcloud.yml `
-            /d:sonar.qualitygate.wait=true
+            /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.xml" `
+            /d:sonar.qualitygate.wait=true `
+            /d:sonar.exclusions=**/bin/**,**/obj/**
         shell: pwsh
 
+      # 3️⃣ Restore & Build
       - name: Restore
         run: dotnet restore NetSdrClient.sln
       - name: Build
         run: dotnet build NetSdrClient.sln -c Release --no-restore
 
-      - name: Run Tests & Coverage
+      # 4️⃣ Run Tests with coverage
+      - name: Tests with coverage (OpenCover)
         run: |
-          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release `
+          dotnet test NetSdrClientAppTests/NetSdrClientAppTests.csproj -c Release --no-build `
             /p:CollectCoverage=true `
-            /p:CoverletOutput=coverage.client.xml `
+            /p:CoverletOutput=../TestResults/coverage.xml `
             /p:CoverletOutputFormat=opencover
+          echo "===== COVERAGE FILE STRUCTURE ====="
+          dir ../TestResults
         shell: pwsh
 
+      # 5️⃣ End SonarCloud analysis
       - name: SonarScanner End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         shell: pwsh
