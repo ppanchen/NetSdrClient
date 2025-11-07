@@ -58,6 +58,7 @@ jobs:
           dotnet sonarscanner begin `
           /k:"euviola_NetSdrClient" `
           /o:"euviola"  `
+          /d:sonar.projectBaseDir="." `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.cs.opencover.reportsPaths="**/coverage.xml" `
           /d:sonar.cpd.cs.minimumTokens=40 `
