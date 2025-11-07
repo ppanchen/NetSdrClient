@@ -62,8 +62,7 @@ jobs:
           /d:sonar.cs.opencover.reportsPaths="**/coverage.xml" `
           /d:sonar.cpd.cs.minimumTokens=40 `
           /d:sonar.cpd.cs.minimumLines=5 `
-          /d:sonar.exclusions=**/Program.cs,**/bin/**,**/obj/**,**/Migrations/**,**/sonarcloud.yml `
-          /d:sonar.test.exclusions="**/bin/**,**/obj/**"
+          /d:sonar.exclusions=**/bin/**,**/obj/**,**/sonarcloud.yml `
           /d:sonar.qualitygate.wait=true
         shell: pwsh
       # 2) BUILD & TEST
