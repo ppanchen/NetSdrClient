@@ -1,0 +1,9 @@
+﻿C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Interfaces\IClientHandler.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Interfaces\IEchoServer.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Interfaces\ILogger.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Interfaces\IUdpSender.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Services\ClientHandler.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Services\EchoServer.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Application\Services\UdpTimedSender.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Presentation\Infrastructure\ConsoleLogger.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\EchoTspServer\Presentation\Program.cs

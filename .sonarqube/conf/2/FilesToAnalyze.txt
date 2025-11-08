@@ -1,0 +1,13 @@
+﻿C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientAppTests\ArchitectureTests.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientAppTests\NetSdrClientTests.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientAppTests\NetSdrMessageHelperTests.cs
+C:\Users\compa\.nuget\packages\microsoft.net.test.sdk\18.0.0\build\net8.0\Microsoft.NET.Test.Sdk.Program.cs
+C:\Users\compa\.nuget\packages\microsoft.testplatform.testhost\18.0.0\build\net8.0\x64\testhost.exe
+C:\Users\compa\.nuget\packages\microsoft.testplatform.testhost\18.0.0\build\net8.0\x64\testhost.dll
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\NUnit3.TestAdapter.dll
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\NUnit3.TestAdapter.pdb
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.dll
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.api.dll
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.core.dll
+C:\Users\compa\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\testcentric.engine.metadata.dll
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientAppTests\TestResults\coverage.xml
