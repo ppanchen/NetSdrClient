@@ -35,25 +35,40 @@ namespace EchoTspServer.Tests
             await connectTask;
             listener.Stop();
 
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
+            // Створюємо CancellationTokenSource, який буде скасовано через 2 секунди
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            var token = cts.Token;
 
             // Act
+            // Запускаємо обробку клієнта у фоновому режимі
             var handleTask = _handler.HandleClientAsync(serverClient, token);
 
             var stream = clientTask.GetStream();
             var message = Encoding.UTF8.GetBytes("ping");
-            await stream.WriteAsync(message, 0, message.Length);
+
+            // 🎯 Виправлення: Виклик WriteAsync з ReadOnlyMemory<byte> та CancellationToken
+            await stream.WriteAsync(message.AsMemory(), token);
+
 
             byte[] buffer = new byte[1024];
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+            // Використовуємо ReadAsync з CancellationToken для кращої сумісності
+            int bytesRead = await stream.ReadAsync(buffer, token);
 
             // Assert
             Assert.That(Encoding.UTF8.GetString(buffer, 0, bytesRead), Is.EqualTo("ping"));
             _loggerMock.Verify(l => l.Info(It.Is<string>(s => s.Contains("Echoed"))), Times.AtLeastOnce);
 
+            // Очікуємо завершення обробки клієнта (HandleClientAsync), 
+            // оскільки ми відправили та отримали дані.
+            // Примітка: HandleClientAsync має завершитися після закриття потоку,
+            // або коли токен буде скасовано.
+            await handleTask;
+
             serverClient.Close();
             clientTask.Close();
         }
+
 
         //[Test]
         //public async Task HandleClientAsync_HandlesException_LogsError()
