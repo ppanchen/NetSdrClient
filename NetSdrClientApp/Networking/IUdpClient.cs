@@ -6,7 +6,7 @@ namespace NetSdrClientApp.Networking
 {
     public interface IUdpClient
     {
-        event EventHandler<MessageReceivedEventArgs>? MessageReceived;
+        event EventHandler<byte[]>? MessageReceived;
 
         Task StartListeningAsync();
 
