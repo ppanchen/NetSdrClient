@@ -56,7 +56,8 @@ namespace NetSdrClientApp.Networking
         {
             if (Connected)
             {
-                _cts?.Cancel();
+                _cts?.close();
+                _cts?.Dispose();
                 _stream?.Close();
                 _tcpClient?.Close();
 
@@ -100,7 +101,7 @@ namespace NetSdrClientApp.Networking
 
         private async Task StartListeningAsync()
         {
-            if (Connected && _stream != null && _stream.CanRead)
+            if (Connected && _stream != null && _stream.CanRead && _cts != null)
             {
                 try
                 {
