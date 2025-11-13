@@ -245,8 +245,7 @@ updates:
   - Require a pull request before merging
   - Require status checks to pass → відміть:
     - твій CI-джоб (наприклад, CI / Tests & Sonar)
-    - SonarCloud Code Analysis / SonarCloud Quality Gate
-<img width="954" height="562" alt="image" src="https://github.com/user-attachments/assets/ca70a9cc-2eac-4e4c-8177-663a63cfaeb8" />
+    - SonarCloud Code Analysis / SonarCloud Quality Gate<img width="954" height="562" alt="image" src="https://github.com/user-attachments/assets/ca70a9cc-2eac-4e4c-8177-663a63cfaeb8" />
   - (Опц.) Require approvals (1–2)
   - (Опц.) Require branches to be up to date (щоб ребейзилися перед мерджем)
  
