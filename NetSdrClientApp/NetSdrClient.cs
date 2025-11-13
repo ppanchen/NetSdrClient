@@ -1,21 +1,21 @@
 ﻿using NetSdrClientApp.Messages;
 using NetSdrClientApp.Networking;
 using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Channels;
+//using System.Text;
+//using System.Threading;
+//using System.Threading.Channels;
 using System.Threading.Tasks;
 using static NetSdrClientApp.Messages.NetSdrMessageHelper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NetSdrClientApp
 {
     public class NetSdrClient
     {
-        private ITcpClient _tcpClient;
-        private IUdpClient _udpClient;
+        private readonly ITcpClient _tcpClient;
+        private readonly IUdpClient _udpClient;
 
         public bool IQStarted { get; set; }
 
@@ -133,7 +133,7 @@ namespace NetSdrClientApp
 
         private TaskCompletionSource<byte[]>? responseTaskSource;
 
-        private async Task<byte[]> SendTcpRequest(byte[] msg)
+        private async Task<byte[]?> SendTcpRequest(byte[] msg)
         {
             if (!_tcpClient.Connected)
             {
