@@ -131,7 +131,7 @@ namespace NetSdrClientApp
             }
         }
 
-        private TaskCompletionSource<byte[]> responseTaskSource;
+        private TaskCompletionSource<byte[]>? responseTaskSource;
 
         private async Task<byte[]> SendTcpRequest(byte[] msg)
         {
