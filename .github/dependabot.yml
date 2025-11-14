@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Configuration for the NuGet package ecosystem (.NET / C#)
+  - package-ecosystem: "nuget" 
+    # Path to the manifest files (csproj) — check the root of the repository
+    directory: "/" 
+    schedule:
+      interval: "weekly"
