@@ -1,13 +1,6 @@
 version: 2
 updates:
-  # Налаштування для пакетів NuGet (.NET)
   - package-ecosystem: "nuget"
-    # Перевірка в корені репозиторію
     directory: "/"
-    # Планування перевірок: раз на тиждень
     schedule:
       interval: "weekly"
-    # Якщо ви хочете, щоб Dependabot створював PR одразу після знаходження оновлення
-    # rebase-strategy: "auto"
-    # labels: 
-    #   - "dependencies"
