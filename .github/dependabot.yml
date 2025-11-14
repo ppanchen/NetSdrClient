@@ -5,5 +5,4 @@ updates:
     # Path to the manifest files (csproj) — check the root of the repository
     directory: "/" 
     schedule:
-      # Check for updates weekly
       interval: "weekly"
