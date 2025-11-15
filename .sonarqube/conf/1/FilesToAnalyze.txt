@@ -1,0 +1,7 @@
+﻿C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Messages\NetSdrMessageHelper.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\NetSdrClient.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Networking\ITcpClient.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Networking\IUdpClient.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Networking\TcpClientWrapper.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Networking\UdpClientWrapper.cs
+C:\Users\compa\source\repos\YehorYurch5\NetSdrClient\NetSdrClientApp\Program.cs
